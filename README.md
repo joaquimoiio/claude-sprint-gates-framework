@@ -1,5 +1,10 @@
 # Framework de Sprints com Gates para Claude Code
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Claude Code](https://img.shields.io/badge/Claude%20Code-framework-8A5CF6.svg)](https://claude.com/claude-code)
+
+🇧🇷 Português · [🇬🇧 English](README.en.md)
+
 Um framework **portátil** para desenvolver com IA (Claude Code) sob um fluxo de Sprints
 com **gates determinísticos** — onde "aguarde aprovação" não é um pedido educado à IA, e
 sim uma **trava física**: um hook bloqueia a escrita de código (exit code 2) enquanto a
