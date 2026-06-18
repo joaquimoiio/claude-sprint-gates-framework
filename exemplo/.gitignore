@@ -1,0 +1,12 @@
+# Flag de aprovação da Sprint — estado local, criada por /sprint-aprovar
+.claude/state/sprint-aprovada
+
+# Overrides pessoais do Claude Code — fora do git
+.claude/settings.local.json
+
+# Dependências / build
+node_modules/
+dist/
+build/
+.env
+.env.*

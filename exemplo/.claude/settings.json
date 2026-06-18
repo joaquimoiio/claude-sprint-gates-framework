@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "deny": ["Read(./.env)", "Read(./**/secrets/**)"]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/gate-bloqueio-codigo.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/pos-edicao-qualidade.sh",
+            "timeout": 60
+          }
+        ]
+      }
+    ]
+  }
+}
