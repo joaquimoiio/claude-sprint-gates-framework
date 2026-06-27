@@ -21,6 +21,7 @@ etapas. Este framework resolve isso com mecânica, não com boa vontade:
 - **O GATE 2 é um hook**: sem a flag `state/sprint-aprovada`, `Write`/`Edit` em pastas de fonte é barrado.
 - **A qualidade é determinística**: typecheck/lint rodam por hook após cada edição, não por lembrança.
 - **Contexto isolado por subagente**: o `arquiteto` planeja sem implementar; os devs implementam sem redefinir escopo.
+- **Roteiro durável e visível**: cada Sprint vira um arquivo em `docs/sprints/` (um por Sprint) e um quadro `README.md` com **feito / em andamento / a fazer** — mantido pelas próprias skills (`/sprint-planejar` registra 🔵, `/sprint-revisar` fecha ✅).
 
 ## O ciclo
 

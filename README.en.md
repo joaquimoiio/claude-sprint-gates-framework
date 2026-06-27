@@ -24,6 +24,7 @@ steps. This framework fixes that with mechanics, not goodwill:
 - **GATE 2 is a hook**: without the `state/sprint-aprovada` flag, `Write`/`Edit` in source folders is blocked.
 - **Quality is deterministic**: typecheck/lint run via hook after every edit, not from memory.
 - **Isolated context per subagent**: the *architect* plans without implementing; the *devs* implement without redefining scope.
+- **Durable, visible roadmap**: every Sprint becomes a file under `docs/sprints/` (one per Sprint) plus a `README.md` board with **done / in progress / to do** — maintained by the skills themselves (`/sprint-planejar` marks it 🔵, `/sprint-revisar` closes it ✅).
 
 ## The cycle
 

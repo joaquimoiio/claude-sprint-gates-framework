@@ -64,6 +64,8 @@ os templates da seção 3 do FRAMEWORK-SPRINT-GATES.md (que está na raiz):
 - .claude/state/sprint-atual.md (placeholder inicial) e .gitignore ignorando
   .claude/state/sprint-aprovada e .claude/settings.local.json.
 - .claude/README.md — mapa do .claude/ com a tabela "carregamento de contexto por tarefa".
+- docs/sprints/README.md — o quadro de Sprints (feito / em andamento / a fazer), com a
+  legenda de status e a tabela inicial vazia (ou com a Sprint 1 se já houver uma).
 
 Regras ao gerar:
 - Os hooks devem casar SÓ as pastas de fonte que eu listei; docs/state/config ficam livres.
@@ -84,6 +86,11 @@ Regras ao gerar:
 │
 ├── <codebaseA>/CLAUDE.md             # Convenções da codebase A  (omita se repo único)
 ├── <codebaseB>/CLAUDE.md             # Convenções da codebase B
+│
+├── docs/
+│   └── sprints/                      # Roteiro durável das Sprints (1 arquivo por Sprint)
+│       ├── README.md                 # Quadro: feito / em andamento / a fazer
+│       └── sprint-<N>-<slug>.md       # Registro durável de cada Sprint
 │
 └── .claude/
     ├── settings.json                 # Permissões + hooks (gates) — versionado
@@ -107,9 +114,14 @@ Regras ao gerar:
     │   └── pos-edicao-qualidade.sh       # PostToolUse: qualidade após cada edição
     │
     └── state/
-        ├── sprint-atual.md               # Documento + histórias + tasks + critérios
+        ├── sprint-atual.md               # Plano VIVO da Sprint corrente (uma por vez)
         └── sprint-aprovada               # FLAG: existe apenas após o GATE 2
 ```
+
+> **`state/sprint-atual.md` × `docs/sprints/`:** o primeiro é o plano **vivo** da Sprint
+> corrente; o segundo é o **registro durável** de todas as Sprints (um arquivo por Sprint +
+> o quadro `README.md`). `/sprint-planejar` cria/atualiza o registro e o marca 🔵;
+> `/sprint-revisar`, ao fechar a Sprint, o marca ✅. É assim que "feito / a fazer" fica visível.
 
 ### 3.2 `CLAUDE.md` (raiz)
 
@@ -246,7 +258,7 @@ Avise: "GATE 1 — preciso destas decisões antes de planejar." e liste as lacun
 ```markdown
 ---
 name: sprint-planejar
-description: Cria o pacote de planejamento da Sprint (documento, histórias, tasks, critérios de aceite) e PARA no GATE 2. Use após o entendimento estar validado.
+description: Cria o pacote de planejamento da Sprint (documento, histórias, tasks, critérios de aceite), registra a Sprint em docs/sprints/ e PARA no GATE 2. Use após o entendimento estar validado.
 allowed-tools: Read, Glob, Grep, Write
 ---
 
@@ -258,6 +270,13 @@ Delegue ao subagente `arquiteto`. Produza, em `.claude/state/sprint-atual.md`:
 2. **Histórias de usuário** — "Como <persona>, quero <ação>, para <valor>."
 3. **Tasks técnicas** por história, pequenas e rastreáveis.
 4. **Critérios de aceite** mensuráveis + Definition of Done.
+
+Depois, registre a Sprint no **roteiro durável** em `docs/sprints/`:
+
+5. Crie/atualize `docs/sprints/sprint-<N>-<slug>.md` com o resumo durável (objetivo, escopo
+   incluído/fora, histórias, critérios). O plano completo e vivo fica em `state/sprint-atual.md`;
+   este arquivo é o registro permanente.
+6. Atualize o quadro `docs/sprints/README.md`: status da Sprint para **🔵 Em andamento**.
 
 Ao final, apresente o pacote e **PARE**. NÃO escreva código.
 Avise: "GATE 2 — aguardando aprovação. Rode /sprint-aprovar quando validar."
@@ -306,7 +325,7 @@ codebase, e NÃO toque em nada fora do escopo. O hook de qualidade roda a cada e
 ---
 name: sprint-revisar
 description: Audita a entrega da Sprint contra os critérios de aceite e a Definition of Done. Use no GATE 3, após /sprint-implementar, antes de declarar concluído.
-allowed-tools: Read, Glob, Grep, Bash
+allowed-tools: Read, Glob, Grep, Bash, Edit
 ---
 
 # Revisar Sprint (GATE 3)
@@ -314,8 +333,61 @@ allowed-tools: Read, Glob, Grep, Bash
 Delegue ao subagente `revisor-qa`. Compare a entrega com cada critério de aceite de
 `.claude/state/sprint-atual.md`: (a) todos atendidos, (b) nenhum escopo futuro vazou,
 (c) convenções respeitadas, (d) qualidade passando. Reporte aprovado/reprovado item a
-item e PARE no GATE 3 para validação humana.
+item e PARE no GATE 3 para validação humana. NÃO corrija **código** aqui — só audite.
+
+Ao **fechar a Sprint** (após o ok humano), atualize o roteiro durável:
+- `docs/sprints/sprint-<N>-<slug>.md`: status para **✅ Concluída** (data/commit) + resultado.
+- `docs/sprints/README.md`: status da Sprint no quadro para **✅ Concluída**.
 ```
+
+### 3.14 `docs/sprints/README.md` — o quadro (template)
+
+```markdown
+# Sprints — quadro e histórico
+
+> Roteiro durável das Sprints. Uma Sprint por arquivo `sprint-<N>-<slug>.md`; este
+> README é o quadro. A Sprint corrente tem o plano vivo em `.claude/state/sprint-atual.md`.
+
+| Símbolo | Status | Significado |
+|---------|--------|-------------|
+| ✅ | Concluída | GATE 3 aprovado + validação humana. |
+| 🔵 | Em andamento | Planejada/aprovada; em implementação ou revisão. |
+| ⚪ | A fazer | Proposta no roteiro; ainda não analisada/planejada. |
+
+| Sprint | Status | Foco | Arquivo |
+|--------|--------|------|---------|
+| <N> — <título> | 🔵 Em andamento | <foco curto> | [`sprint-<N>-<slug>.md`](sprint-<N>-<slug>.md) |
+```
+
+### 3.15 `docs/sprints/sprint-<N>-<slug>.md` — registro de uma Sprint (template)
+
+```markdown
+# Sprint <N> — <título>
+
+> **Status: 🔵 Em andamento** (ou ✅ Concluída / ⚪ A fazer).
+> Plano vivo: `../../.claude/state/sprint-atual.md`.
+
+## Objetivo
+<o valor da fatia vertical>
+
+## Escopo incluído
+1. ...
+
+## Escopo explicitamente fora (limite duro)
+- ...
+
+## Histórias
+- **H1** — Como <persona>, quero <ação>, para <valor>.
+
+## Critérios de aceite (resumo)
+- ...
+
+## Resultado
+_(Preencher quando a Sprint for fechada no GATE 3.)_
+```
+
+> Sprints **a fazer** entram como `⚪` com um esboço (valor + indicadores/endpoints
+> previstos); só ganham escopo fechado quando passam pelos GATEs 1 e 2.
 
 ### 3.11 `.claude/agents/arquiteto.md`
 
@@ -375,7 +447,8 @@ Nova demanda
 /sprint-analisar ──► GATE 1: dúvidas respondidas? ──(não)──► aguarda
    │ (sim)
    ▼
-/sprint-planejar ──► gera state/sprint-atual.md ──► GATE 2: humano aprova?
+/sprint-planejar ──► gera state/sprint-atual.md + registra em docs/sprints/ (🔵)
+   │                   ──► GATE 2: humano aprova?
    │
    │  ⨉ código nas pastas de fonte está BLOQUEADO pelo hook
    ▼
@@ -386,7 +459,7 @@ Nova demanda
    │                     (hook roda qualidade a cada edição)
    ▼
 /sprint-revisar  ──► revisor-qa audita ──► GATE 3: humano valida
-   │
+   │                   ──► ao fechar, marca a Sprint ✅ em docs/sprints/
    ▼
 Fechar Sprint (rm flag) ──► volta ao topo
 ```
@@ -413,6 +486,7 @@ Fechar Sprint (rm flag) ──► volta ao topo
 - [ ] Hooks com as **pastas de fonte certas** e `chmod +x`.
 - [ ] `.gitignore` ignora `.claude/state/sprint-aprovada` e `.claude/settings.local.json`.
 - [ ] Teste do gate: tente editar um arquivo de fonte SEM a flag → deve ser **bloqueado**.
+- [ ] `docs/sprints/README.md` (quadro) criado; `/sprint-planejar` registra cada Sprint lá.
 - [ ] `/sprint-analisar` roda e para no GATE 1.
 
 > Adapte os nomes dos subagentes dev às codebases reais (ex.: `dev-mobile`, `dev-data`).

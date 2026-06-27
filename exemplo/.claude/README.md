@@ -18,10 +18,11 @@ barra de qualquer forma. Na dúvida, pare e pergunte.
 | Situação | Onde olhar / o que rodar |
 |----------|--------------------------|
 | Nova demanda chegou | `/sprint-analisar` → para no GATE 1 |
-| Planejar a Sprint | `/sprint-planejar` (subagente `arquiteto`) → escreve `state/sprint-atual.md`, para no GATE 2 |
+| Planejar a Sprint | `/sprint-planejar` (subagente `arquiteto`) → escreve `state/sprint-atual.md`, registra a Sprint em `../docs/sprints/`, para no GATE 2 |
 | Liberar implementação | `/sprint-aprovar` (após "ok" humano) → cria a flag `state/sprint-aprovada` |
 | Codar o aprovado | `/sprint-implementar` → só as tasks de `state/sprint-atual.md` |
-| Auditar a entrega | `/sprint-revisar` (subagente `revisor-qa`) → GATE 3 |
+| Auditar a entrega | `/sprint-revisar` (subagente `revisor-qa`) → GATE 3; ao fechar, marca a Sprint como concluída em `../docs/sprints/` |
+| Roteiro de Sprints (feito / a fazer) | [`../docs/sprints/README.md`](../docs/sprints/README.md) (quadro) + `sprint-N-*.md` |
 | Vou escrever frontend | [`../frontend/CLAUDE.md`](../frontend/CLAUDE.md) |
 | Vou escrever backend | [`../backend/CLAUDE.md`](../backend/CLAUDE.md) |
 
@@ -30,7 +31,8 @@ barra de qualquer forma. Na dúvida, pare e pergunte.
 - **`skills/`** — os 5 comandos do fluxo (`/sprint-*`), cada um com frontmatter `name`/`description`.
 - **`agents/`** — subagentes em contexto isolado: `arquiteto` (planeja, não coda), `dev-frontend`/`dev-backend` (implementam só o aprovado), `revisor-qa` (audita).
 - **`hooks/`** — `gate-bloqueio-codigo.sh` (trava o GATE 2) e `pos-edicao-qualidade.sh` (typecheck após cada edição).
-- **`state/`** — `sprint-atual.md` (escopo aprovado) e `sprint-aprovada` (flag binária; sem ela, `src/` está travado).
+- **`state/`** — `sprint-atual.md` (escopo aprovado da Sprint corrente) e `sprint-aprovada` (flag binária; sem ela, `src/` está travado).
+- **`../docs/sprints/`** — roteiro durável: um `sprint-N-<slug>.md` por Sprint + `README.md` (quadro com feito / em andamento / a fazer). Mantido por `/sprint-planejar` e `/sprint-revisar`.
 
 ## Como manter
 
